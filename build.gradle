@@ -1,57 +1,5 @@
-//plugins {
-//    id 'java'
-//}
-//
-//group 'org.example'
-//version '1.0-SNAPSHOT'
-//
-//sourceCompatibility = 15.0
-//
-//repositories {
-//    mavenCentral()
-//}
-//
-//dependencies {
-//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
-//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
-//}
-//
-//test {
-//    useJUnitPlatform()
-//}
-//
-//task copyJar(type: Copy) {
-//    from jar
-//    into projectDir
-//    finalizedBy {
-//        buildDockerImage
-//    }
-//}
-//
-//jar {
-//    manifest {
-//        attributes "Main-Class": "Hello"
-//    }
-//    from {
-//        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-//    }
-//    finalizedBy {
-//        copyJar
-//    }
-//}
-//
-//task buildDockerImage(type: Exec) {
-//    workingDir projectDir
-//    commandLine "docker", "build", "-t", "${project.name}:${project.version}", "."
-//    finalizedBy {
-//        runDockerContainer
-//    }
-//}
-//
-//task runDockerContainer(type: Exec) {
-//    commandLine "docker", "run", "${project.name}:${project.version}"
-//}
-plugins {
+plugins 
+{
     id 'groovy'
     id 'java'
 }
@@ -59,19 +7,21 @@ plugins {
 group 'org.example'
 version '1.0'
 
-repositories {
+repositories 
+{
     mavenCentral()
 }
 
-def start = tasks.register("start") {
-    finalizedBy {
+def start = tasks.register("start") 
+{
+    finalizedBy 
+    {
         fatJar
     }
 }
 
-//create a single Jar with all dependencies
-
-def fatJar = tasks.register("fatJar", Jar) {
+def fatJar = tasks.register("fatJar", Jar) 
+{
     println "Jar creating start!"
     def mainClassName = "Hello"
     manifest {
@@ -90,40 +40,50 @@ def fatJar = tasks.register("fatJar", Jar) {
     }
 }
 
-def transfer = tasks.register("transferJar") {
+def transfer = tasks.register("transferJar") 
+{
     doLast {
         def jarName = "${rootProject.name}-all-${version}.jar"
         println "Transfer start!"
+        
         ant.move file: "${buildDir}/libs/${jarName}",
                 todir: "${buildDir}/../ContainerDirectory"
+                
         println "Transfer complete!"
     }
 
-    finalizedBy {
+    finalizedBy 
+    {
         createDockerContainer
     }
 }
 
 
-def createDockerContainer = tasks.register("createDockerContainer", Exec) {
-    doFirst {
+def createDockerContainer = tasks.register("createDockerContainer", Exec) 
+{
+    doFirst 
+    {
         println "Start creating docker container!"
         println "${project.name}:fat${version}"
     }
 
     commandLine 'docker', 'build', '-t', "${project.name}:fat${version}", "./containerdirectory"
 
-    doLast {
+    doLast 
+    {
         println "Complete creating docker container!"
     }
 
-    finalizedBy {
+    finalizedBy 
+    {
         runDockerContainer
     }
 }
 
-def runDockerContainer = tasks.register("runDockerContainer", Exec) {
-    doFirst {
+def runDockerContainer = tasks.register("runDockerContainer", Exec) 
+{
+    doFirst 
+    {
         println "Trying to start docker container!"
     }
 
@@ -136,7 +96,8 @@ def runDockerContainer = tasks.register("runDockerContainer", Exec) {
     }
 }
 
-dependencies {
+dependencies 
+{
     compile 'org.codehaus.groovy:groovy-all:2.3.11'
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
