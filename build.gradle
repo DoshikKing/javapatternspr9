@@ -42,7 +42,8 @@ def fatJar = tasks.register("fatJar", Jar)
 
 def transfer = tasks.register("transferJar") 
 {
-    doLast {
+    doLast
+    {
         def jarName = "${rootProject.name}-all-${version}.jar"
         println "Transfer start!"
         
